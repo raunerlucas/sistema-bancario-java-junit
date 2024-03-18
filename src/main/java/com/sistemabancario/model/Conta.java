@@ -1,5 +1,6 @@
 package com.sistemabancario.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,14 +61,12 @@ public class Conta implements Cadastro {
      * conta usando qualquer um dos construtores, a lista de movimentações não é
      * nula, chamando o método {@link #getMovimentacoes()}. (R04)
      */
-    private List<Movimentacao> movimentacoes;
+    private List<Movimentacao> movimentacoes = new ArrayList<>();
 
     public Conta() {
-        // TODO: Você precisa implementar este método
     }
 
     public Conta(Agencia agencia, boolean especial, final double limite) {
-        // TODO: Você precisa implementar este método
     }
 
     /**
@@ -91,7 +90,20 @@ public class Conta implements Cadastro {
      * @param movimentacao {@link Movimentacao} a ser adicionada
      */
     public void addMovimentacao(Movimentacao movimentacao) {
-        // TODO: Você precisa implementar este método
+        if (movimentacoes.contains(movimentacao))
+            throw new IllegalArgumentException("Movimentação já existe");
+
+        if (movimentacao.isConfirmada()) {
+            if (movimentacao.getTipo() == 'C') {
+                saldo += movimentacao.getValor();
+            } else {
+                if (movimentacao.getValor() > getSaldoTotal()) {
+                    throw new IllegalArgumentException("Saldo insuficiente");
+                }
+                saldo -= movimentacao.getValor();
+            }
+        }
+        movimentacoes.add(movimentacao);
     }
 
     /**
@@ -164,6 +176,9 @@ public class Conta implements Cadastro {
     }
 
     public void setNumero(String numero) {
+        if (!numero.matches("\\d{5}-\\d")) {
+            throw new IllegalArgumentException("Número de conta inválido");
+        }
         this.numero = numero;
     }
 
@@ -192,6 +207,9 @@ public class Conta implements Cadastro {
     }
 
     public void setLimite(double limite) {
+        if (!especial && limite > 0) {
+            throw new IllegalArgumentException("Conta não especial não pode ter limite");
+        }
         this.limite = limite;
     }
 }

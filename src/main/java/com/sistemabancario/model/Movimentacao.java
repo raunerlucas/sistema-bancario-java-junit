@@ -117,4 +117,16 @@ public class Movimentacao implements Cadastro {
         this.confirmada = confirmada;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Movimentacao)) return false;
+        Movimentacao that = (Movimentacao) o;
+        return getId() == that.getId() && Objects.equals(conta, that.conta);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), conta);
+    }
 }
