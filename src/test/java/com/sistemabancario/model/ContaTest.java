@@ -16,6 +16,7 @@ public class ContaTest {
         final String obt = inst.getNumero();
         assertEquals(num, obt);
     }
+
     @Test
     void testSetNumeroInvalido_R01() {
         final Conta inst = new Conta();
@@ -51,9 +52,31 @@ public class ContaTest {
     }
 
     @Test
-    void testHistoricoNotNull_R04(){
+    void testHistoricoNotNull_R04() {
         final Conta inst = new Conta();
         assertNotNull(inst.getMovimentacoes());
     }
 
+
+    @Test
+    void testGetSaldoTotal_R06() {
+        final Conta inst = new Conta();
+        inst.setEspecial(true);
+        final double limete = 500.0;
+        inst.setLimite(limete);
+        final double obt = inst.getSaldoTotal();
+        assertEquals(limete, obt);
+    }
+
+    @Test
+    void testDepositoDinheiro_R08() {
+        final Conta inst = new Conta();
+        inst.setEspecial(true);
+        final double limite = 500.6, deposito = 500.8,esp = 1001.4;
+        inst.setLimite(limite);
+        inst.depositoDinheiro(deposito);
+
+        final double obt = inst.getSaldoTotal();
+        assertEquals(esp, obt, 0.001);
+    }
 }

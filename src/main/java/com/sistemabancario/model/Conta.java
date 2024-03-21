@@ -113,12 +113,11 @@ public class Conta implements Cadastro {
      * @return
      */
     public double getSaldoTotal() {
-        /* TODO: Você precisa implementar este método. 
-        A linha abaixo deve ser substituída pelo seu código */
-        return 0.0;
+        return saldo + limite;
     }
 
     /**
+     * (R07)
      * Registra uma nova movimentação para retirar um determinado valor da
      * conta, caso o valor seja menor ou igual ao saldo total. Após realizar um
      * saque, o saldo deve ser atualizado.
@@ -140,6 +139,7 @@ public class Conta implements Cadastro {
     }
 
     /**
+     * (R08)
      * Adiciona uma nova movimentação de depósito em dinheiro tanto realizada
      * por um funcionário quanto em um caixa eletrônico, que deve ser confirmada
      * automaticamente. Considera-se que todos os caixas eletrônicos do banco
@@ -148,10 +148,16 @@ public class Conta implements Cadastro {
      * @param valor valor a ser depositado (deve ser um valor positivo)
      */
     public void depositoDinheiro(final double valor) {
-        // TODO: Você precisa implementar este método
+        Movimentacao mov = new Movimentacao(this);
+        mov.setConfirmada(true);
+        mov.setTipo('C');
+        mov.setValor(valor);
+        saldo += valor;
+        movimentacoes.add(mov);
     }
 
     /**
+     * (R09)
      * Adiciona uma nova movimentação de depósito em cheque (que deve ser
      * confirmada posteriormente por um funcionário do banco).
      *
@@ -206,6 +212,9 @@ public class Conta implements Cadastro {
         return limite;
     }
 
+    /**
+     * Verifica se a conta é especial antes de fazer um setLimet
+     */
     public void setLimite(double limite) {
         if (!especial && limite > 0) {
             throw new IllegalArgumentException("Conta não especial não pode ter limite");
