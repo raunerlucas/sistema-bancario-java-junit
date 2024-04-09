@@ -1,5 +1,6 @@
 package com.sistemabancario.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public class Conta implements Cadastro {
     private long id;
 
     /**
-     * Número que identifica unicamente uma conta numa determinada agência,
+     * Número que identifica unicamente uma conta em uma determinada agência,
      * devendo estar no formato 99999-9. Se o número não estiver no formato
      * indicado, o valor não pode ser armazenado e uma exceção deve ser lançada
      * (R01). O número da agência tem um dígito verificador como no CPF, mas
@@ -60,20 +61,13 @@ public class Conta implements Cadastro {
      * conta usando qualquer um dos construtores, a lista de movimentações não é
      * nula, chamando o método {@link #getMovimentacoes()}. (R04)
      */
-    private List<Movimentacao> movimentacoes;
+    private List<Movimentacao> movimentacoes = new ArrayList<>();
 
     public Conta() {
-        // TODO: Você precisa implementar este método
-    }
-
-    public Conta(double Limite) {
-        this.limite = Limite;
     }
 
     public Conta(Agencia agencia, boolean especial, final double limite) {
-        // TODO: Você precisa implementar este método
     }
-
 
     /**
      * Retorna a lista de movimentações.
@@ -96,13 +90,20 @@ public class Conta implements Cadastro {
      * @param movimentacao {@link Movimentacao} a ser adicionada
      */
     public void addMovimentacao(Movimentacao movimentacao) {
-        if (movimentacao.isConfirmada()){
-            if (movimentacao.getTipo() == 'C'){
+        if (movimentacoes.contains(movimentacao))
+            throw new IllegalArgumentException("Movimentação já existe");
+
+        if (movimentacao.isConfirmada()) {
+            if (movimentacao.getTipo() == 'C') {
                 saldo += movimentacao.getValor();
-            } else if (movimentacao.getTipo() == 'D'){
+            } else {
+                if (movimentacao.getValor() > getSaldoTotal()) {
+                    throw new IllegalArgumentException("Saldo insuficiente");
+                }
                 saldo -= movimentacao.getValor();
             }
         }
+        movimentacoes.add(movimentacao);
     }
 
     /**
@@ -116,6 +117,7 @@ public class Conta implements Cadastro {
     }
 
     /**
+     * (R07)
      * Registra uma nova movimentação para retirar um determinado valor da
      * conta, caso o valor seja menor ou igual ao saldo total. Após realizar um
      * saque, o saldo deve ser atualizado.
@@ -137,6 +139,7 @@ public class Conta implements Cadastro {
     }
 
     /**
+     * (R08)
      * Adiciona uma nova movimentação de depósito em dinheiro tanto realizada
      * por um funcionário quanto em um caixa eletrônico, que deve ser confirmada
      * automaticamente. Considera-se que todos os caixas eletrônicos do banco
@@ -145,10 +148,16 @@ public class Conta implements Cadastro {
      * @param valor valor a ser depositado (deve ser um valor positivo)
      */
     public void depositoDinheiro(final double valor) {
-        // TODO: Você precisa implementar este método
+        Movimentacao mov = new Movimentacao(this);
+        mov.setConfirmada(true);
+        mov.setTipo('C');
+        mov.setValor(valor);
+        saldo += valor;
+        movimentacoes.add(mov);
     }
 
     /**
+     * (R09)
      * Adiciona uma nova movimentação de depósito em cheque (que deve ser
      * confirmada posteriormente por um funcionário do banco).
      *
@@ -174,7 +183,7 @@ public class Conta implements Cadastro {
 
     public void setNumero(String numero) {
         if (!numero.matches("\\d{5}-\\d")) {
-            throw new IllegalArgumentException(numero + " não é valido");
+            throw new IllegalArgumentException("Número de conta inválido");
         }
         this.numero = numero;
     }
@@ -203,7 +212,13 @@ public class Conta implements Cadastro {
         return limite;
     }
 
+    /**
+     * Verifica se a conta é especial antes de fazer um setLimet
+     */
     public void setLimite(double limite) {
+        if (!especial && limite > 0) {
+            throw new IllegalArgumentException("Conta não especial não pode ter limite");
+        }
         this.limite = limite;
     }
 }
