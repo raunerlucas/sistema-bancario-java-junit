@@ -1,13 +1,19 @@
 package com.sistemabancario.model;
 
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContaTest {
 
-    public final Conta conta = new Conta();
+    private Conta conta;
+
+    @BeforeEach
+    public void setUp() {
+        conta = new Conta();
+    };
 
     @Test
     void setNumValido_R01() {
@@ -30,15 +36,12 @@ class ContaTest {
         assertFalse(conta.isPoupanca());
     }
 
-
-
-
-
-
+    @Test
     void getSaldoTotal_R06() {
         int expected = 100;
+        conta.setEspecial(true);
         conta.setLimite(expected);
-        assertEquals(expected,conta.getSaldoTotal());
+        assertEquals(expected, conta.getSaldoTotal());
     }
 
     @Test
@@ -50,6 +53,9 @@ class ContaTest {
         mov.setValor(valor);
         conta.addMovimentacao(mov);
         assertEquals(valor, conta.getSaldoTotal());
+    }
+
+    @Test
     void testSetNumeroValido_R01() {
         final Conta inst = new Conta();
         final String num = "12345-6";
@@ -107,18 +113,18 @@ class ContaTest {
         inst.setLimite(limete);
         final double obt = inst.getSaldoTotal();
         assertEquals(limete, obt);
+    }
 
     @Test
     void testDepositoDinheiro_R08() {
         final Conta inst = new Conta();
         inst.setEspecial(true);
-        final double limite = 500.6, deposito = 500.8,esp = 1001.4;
+        final double limite = 500.6, deposito = 500.8, esp = 1001.4;
         inst.setLimite(limite);
         inst.depositoDinheiro(deposito);
 
         final double obt = inst.getSaldoTotal();
         assertEquals(esp, obt, 0.001);
     }
-
 
 }
