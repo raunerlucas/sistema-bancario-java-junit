@@ -14,6 +14,12 @@ endif::[]
 
 image:https://img.shields.io/github/actions/workflow/status/raunerlucas/sistema-bancario-java-junit/maven[GitHub Actions Workflow Status]
 
+Eu config sertinho não sei pq não foi
+
+img.shields.io/github/actions/workflow/status/raunerlucas/sistema-bancario-java-junit/maven[GitHub Actions Workflow Status]
+
+---
+
 = Sistema Bancário para Testes com JUnit 5
 
 IMPORTANT: Vídeo: https://youtu.be/isOY-qG5bxU[🧪⚙️☕️ #1 TDD com JUNIT 5 no VS CODE: Implementando Regras de Negócio em JAVA pra um Sistema Bancário]
