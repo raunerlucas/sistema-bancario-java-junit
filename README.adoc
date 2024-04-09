@@ -12,6 +12,14 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
+image:https://img.shields.io/github/actions/workflow/status/raunerlucas/sistema-bancario-java-junit/maven[GitHub Actions Workflow Status]
+
+Eu config sertinho não sei pq não foi
+
+img.shields.io/github/actions/workflow/status/raunerlucas/sistema-bancario-java-junit/maven[GitHub Actions Workflow Status]
+
+---
+
 = Sistema Bancário para Testes com JUnit 5
 
 = Minha cobertura de teste.
@@ -20,7 +28,7 @@ image::src/images/img.png[Imagem de cobertura de teste]
 IMPORTANT: Vídeo: https://youtu.be/isOY-qG5bxU[🧪⚙️☕️ #1 TDD com JUNIT 5 no VS CODE: Implementando Regras de Negócio em JAVA pra um Sistema Bancário]
 
 Este projeto fornece um conjunto de classes base para que sejam implementados testes unitários
-a partir de um conjunto de requisitos detalhados na documentação. O diagrama abaixo apresenta as classes existentes. 
+a partir de um conjunto de requisitos detalhados na documentação. O diagrama abaixo apresenta as classes existentes; 
 
 .Diagrama das Classes de Negócio do Sistema Bancário (pacote link:src/main/java/com/sistemabancario/model[model]).
 image::diagrama-classes-model.png[]
