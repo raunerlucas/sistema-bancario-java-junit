@@ -12,11 +12,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-image:https://img.shields.io/github/actions/workflow/status/raunerlucas/sistema-bancario-java-junit/maven[GitHub Actions Workflow Status]
-[![maven](https://github.com/raunerlucas/sistema-bancario-java-junit/actions/workflows/maven.yml/badge.svg)](https://github.com/raunerlucas/sistema-bancario-java-junit/actions/workflows/maven.yml)
-Eu config sertinho não sei pq não foi
-
-img.shields.io/github/actions/workflow/status/raunerlucas/sistema-bancario-java-junit/maven[GitHub Actions Workflow Status]
+image:https://img.shields.io/github/actions/workflow/status/raunerlucas/sistema-bancario-java-junit/maven.yml[GitHub Actions Workflow Status]
 
 ---
 
