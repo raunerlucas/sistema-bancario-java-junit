@@ -66,6 +66,10 @@ public class Conta implements Cadastro {
     public Conta() {
     }
 
+    public Conta(double saldo) {
+        this.saldo = saldo;
+    }
+
     public Conta(Agencia agencia, boolean especial, final double limite) {
     }
 
@@ -97,10 +101,11 @@ public class Conta implements Cadastro {
             if (movimentacao.getTipo() == 'C') {
                 saldo += movimentacao.getValor();
             } else {
-                if (movimentacao.getValor() > getSaldoTotal()) {
+                if (movimentacao.getValor() <= saldo) {
+                    saldo -= movimentacao.getValor();
+                } else {
                     throw new IllegalArgumentException("Saldo insuficiente");
                 }
-                saldo -= movimentacao.getValor();
             }
         }
         movimentacoes.add(movimentacao);
@@ -135,7 +140,18 @@ public class Conta implements Cadastro {
      * @param valor valor a ser sacado (deve ser um valor positivo)
      */
     public void saque(final double valor) {
-        // TODO: Você precisa implementar este método
+        if (valor < 0) {
+            throw new IllegalArgumentException("Valor inválido");
+        } else if (valor <= saldo) {
+            Movimentacao mov = new Movimentacao(this);
+            mov.setConfirmada(true);
+            mov.setTipo('D');
+            mov.setValor(valor);
+
+            this.addMovimentacao(mov);
+        } else {
+            throw new IllegalArgumentException("Saldo insuficiente");
+        }
     }
 
     /**
@@ -148,12 +164,15 @@ public class Conta implements Cadastro {
      * @param valor valor a ser depositado (deve ser um valor positivo)
      */
     public void depositoDinheiro(final double valor) {
-        Movimentacao mov = new Movimentacao(this);
-        mov.setConfirmada(true);
-        mov.setTipo('C');
-        mov.setValor(valor);
-        saldo += valor;
-        movimentacoes.add(mov);
+        if (valor > 0) {
+            Movimentacao mov = new Movimentacao(this);
+            mov.setConfirmada(true);
+            mov.setTipo('C');
+            mov.setValor(valor);
+            this.addMovimentacao(mov);
+        } else {
+            throw new IllegalArgumentException("Valor inválido");
+        }
     }
 
     /**
@@ -164,7 +183,15 @@ public class Conta implements Cadastro {
      * @param valor valor a ser depositado (deve ser um valor positivo)
      */
     public void depositoCheque(final double valor) {
-        // TODO: Você precisa implementar este método
+        if (valor > 0) {
+            Movimentacao mov = new Movimentacao(this);
+            mov.setConfirmada(false);
+            mov.setTipo('C');
+            mov.setValor(valor);
+            this.addMovimentacao(mov);
+        } else {
+            throw new IllegalArgumentException("Valor inválido");
+        }
     }
 
     @Override

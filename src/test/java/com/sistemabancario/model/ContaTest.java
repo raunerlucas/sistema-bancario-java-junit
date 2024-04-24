@@ -12,7 +12,7 @@ class ContaTest {
 
     @BeforeEach
     public void setUp() {
-        conta = new Conta();
+        conta = new Conta(100);
     };
 
     @Test
@@ -34,25 +34,6 @@ class ContaTest {
     @Test
     void poupancaFalse_R02() {
         assertFalse(conta.isPoupanca());
-    }
-
-    @Test
-    void getSaldoTotal_R06() {
-        int expected = 100;
-        conta.setEspecial(true);
-        conta.setLimite(expected);
-        assertEquals(expected, conta.getSaldoTotal());
-    }
-
-    @Test
-    void addAddMovimentacao_R07() {
-        final var mov = new Movimentacao(conta);
-        mov.setConfirmada(true);
-        mov.setTipo('C');
-        final int valor = 50;
-        mov.setValor(valor);
-        conta.addMovimentacao(mov);
-        assertEquals(valor, conta.getSaldoTotal());
     }
 
     @Test
@@ -104,6 +85,65 @@ class ContaTest {
         assertNotNull(inst.getMovimentacoes());
     }
 
+    @Test
+    void addMovimentacaoExistente_R05() {
+        final var mov = new Movimentacao(conta);
+        mov.setConfirmada(true);
+        mov.setTipo('C');
+        mov.setValor(50);
+        conta.addMovimentacao(mov);
+        assertThrows(IllegalArgumentException.class, () -> conta.addMovimentacao(mov));
+    }
+
+    @Test
+    void addMovimentacaoCredito_R05() {
+        final var mov = new Movimentacao(conta);
+        mov.setConfirmada(true);
+        mov.setTipo('C');
+        final int valor = 50;
+        final double esp = valor+ conta.getSaldoTotal();
+        mov.setValor(valor);
+        conta.addMovimentacao(mov);
+        assertEquals(esp, conta.getSaldoTotal());
+    }
+
+    @Test
+    void addMovimentacaoDebito_R05() {
+        final var mov = new Movimentacao(conta);
+        mov.setConfirmada(true);
+        mov.setTipo('D');
+        final int valor = 50;
+        final double esp = conta.getSaldoTotal()-valor;
+        mov.setValor(valor);
+        conta.addMovimentacao(mov);
+        assertEquals(esp, conta.getSaldoTotal());
+    }
+
+    @Test
+    void addMovimentacaoDebitoMaiorSaldo_R05() {
+        final var mov = new Movimentacao(conta);
+        mov.setConfirmada(true);
+        mov.setTipo('D');
+        final int valor = 150;
+        final double esp = conta.getSaldoTotal()-valor;
+        mov.setValor(valor);
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, () -> conta.addMovimentacao(mov)),
+                () -> assertNotEquals(esp, conta.getSaldoTotal())
+        );
+    }
+
+    @Test
+    void addMovimentacaoNaoConfirmada_R05() {
+        final var mov = new Movimentacao(conta);
+        mov.setConfirmada(false);
+        mov.setTipo('C');
+        final int valor = 150;
+        final double esp = conta.getSaldoTotal()+valor;
+        mov.setValor(valor);
+        conta.addMovimentacao(mov);
+        assertNotEquals(esp, conta.getSaldoTotal());
+    }
 
     @Test
     void testGetSaldoTotal_R06() {
@@ -116,15 +156,46 @@ class ContaTest {
     }
 
     @Test
-    void testDepositoDinheiro_R08() {
-        final Conta inst = new Conta();
-        inst.setEspecial(true);
-        final double limite = 500.6, deposito = 500.8, esp = 1001.4;
-        inst.setLimite(limite);
-        inst.depositoDinheiro(deposito);
+    void saqueValido_R05() {
+        final double esp = conta.getSaldoTotal()-50;
+        conta.saque(50);
+        assertEquals(esp, conta.getSaldoTotal());
+    }
 
-        final double obt = inst.getSaldoTotal();
+    @Test
+    void saqueInvalido_R05() {
+        final double esp = conta.getSaldoTotal()-150;
+        assertAll(
+                () -> assertThrows(IllegalArgumentException.class, () -> conta.saque(-150)),
+                () -> assertThrows(IllegalArgumentException.class, () -> conta.saque(150)),
+                () -> assertNotEquals(esp, conta.getSaldoTotal())
+        );
+    }
+
+    @Test
+    void testDepositoDinheiro_R08() {
+        final double limite = 400.6, deposito = 500.8, esp = 1001.4;
+        conta.setEspecial(true);
+        conta.setLimite(limite);
+        conta.depositoDinheiro(deposito);
+        final double obt = conta.getSaldoTotal();
         assertEquals(esp, obt, 0.001);
     }
 
+    @Test
+    void testDepositoDinheiroInvalido_R08() {
+        assertThrows(IllegalArgumentException.class, () -> conta.depositoDinheiro(-100));
+    }
+
+    @Test
+    void testDepositoCheque_R09(){
+        conta.depositoCheque(100);
+        final double esp = 100 + conta.getSaldoTotal();
+        assertNotEquals(esp, conta.getSaldoTotal());
+    }
+
+    @Test
+    void testDepositoChequeInvalido_R09(){
+        assertThrows(IllegalArgumentException.class, () -> conta.depositoCheque(-100));
+    }
 }
